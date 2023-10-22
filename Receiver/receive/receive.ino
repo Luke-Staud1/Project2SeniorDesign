@@ -1,23 +1,23 @@
 int recivePin = 2;
-int received = 0;
-int lastReceive = 0;
 void setup()
 {
     // put your setup code here, to run once:
-    Serial.begin(9600);
+    Serial.begin(115200);
 }
 
 void loop()
 {
-    // put your main code here, to run repeatedly:
-    // digitalWrite(led_pin, HIGH);
-    // delay(1);
-    // digitalWrite(led_pin, LOW);
-    // delay(1);
-    received = digitalRead(recivePin);
-    if (received != lastReceive)
+
+    if (digitalRead(recivePin) == 0)
     {
-        Serial.println(received);
+        Serial.println(readBit());
     }
-    lastReceive = received;
+}
+
+bool readBit()
+{
+    delayMicroseconds(225);
+    bool bit = digitalRead(recivePin);
+    delayMicroseconds(275);
+    return bit;
 }
