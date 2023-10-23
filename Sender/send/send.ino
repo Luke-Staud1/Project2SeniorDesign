@@ -1,7 +1,7 @@
 int led_pin = 6;
 void setup() {
   // put your setup code here, to run once:
-  Serial.begin(9600);
+  Serial.begin(115200);
 
 }
 
