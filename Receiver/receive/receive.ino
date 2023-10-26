@@ -3,7 +3,7 @@ const int MESSAGE_SIZE = 9;
 const int MESSAGE_TIMEOUT = 1000; // timeout in miliseconds
 bool *fifo = new bool[MESSAGE_SIZE];
 int bitTracker = 0;
-int timeoutTracker = 0;
+bool timeoutHit = false;
 long int milisLastUpdate = 0;
 
 void setup()
@@ -19,6 +19,7 @@ void loop()
     if (digitalRead(RECIVE_PIN) == 0)
     {
         readBit();
+        timeoutHit = false;
         bitTracker++;
         milisLastUpdate = millis();
     }
@@ -28,6 +29,7 @@ void loop()
         if (verifyByte(fifo))
         {
             convetToAscii();
+            delay(10);
             fifoFlush();
         }
         else
@@ -39,9 +41,13 @@ void loop()
     if (millis() - milisLastUpdate > MESSAGE_TIMEOUT)
     {
         fifoFlush();
-        Serial.print("Timeout reached no update in(ms): ");
-        Serial.println(millis() - milisLastUpdate);
-        milisLastUpdate = millis();
+        if (!timeoutHit)
+        {
+            timeoutHit = true;
+            Serial.print("Timeout reached no update in(ms): ");
+            Serial.println(millis() - milisLastUpdate);
+            milisLastUpdate = millis();
+        }
     }
 }
 
@@ -64,22 +70,28 @@ void fifoFlush()
 
 void convetToAscii()
 {
-    int ascii = 0; // i dont know why this has to be a one but it makes everything work
+    char ascii = 0; // i dont know why this has to be a one but it makes everything work
     bool *dataSegment = new bool[MESSAGE_SIZE - 1];
+    // bool *flipedData = new bool[MESSAGE_SIZE - 1];
     for (int i = 0; i < MESSAGE_SIZE - 1; i++)
     {
         dataSegment[i] = fifo[i];
     }
-    printBinary(dataSegment, MESSAGE_SIZE - 1);
+    // for (int i = 0; i < MESSAGE_SIZE - 1; i++)
+    // {
+    //     flipedData[i] = dataSegment[MESSAGE_SIZE - 2 - i];
+    // }
+    // printBinary(flipedData, MESSAGE_SIZE - 1);
+
     for (int i = 0; i < MESSAGE_SIZE - 1; i++)
     {
         if (dataSegment[i])
         {
-            ascii += pow(2, (MESSAGE_SIZE - 1 - i));
-            Serial.println(MESSAGE_SIZE - 1 - i);
+            ascii |= 1 << i;
         }
     }
-    Serial.println(ascii);
+
+    Serial.print(ascii);
 }
 
 void printBinary(bool bitArray[], int size)
@@ -96,15 +108,6 @@ void printBinary(bool bitArray[], int size)
         }
     }
     Serial.println();
-}
-bool *reverseArray(bool byteArray[])
-{
-    bool *reversedArray = new bool[MESSAGE_SIZE];
-    for (int i = 0; i < MESSAGE_SIZE; i++)
-    {
-        reversedArray[i] = byteArray[MESSAGE_SIZE - i];
-    }
-    return reversedArray;
 }
 
 bool verifyByte(bool byteMessage[])
@@ -126,7 +129,7 @@ bool verifyByte(bool byteMessage[])
 
 bool readBit()
 {
-    delayMicroseconds(225);
+    delayMicroseconds(110);
     fifoPush(digitalRead(RECIVE_PIN));
-    delayMicroseconds(275); // we can lower this time to account for how long fifo push will take to run
+    delayMicroseconds(210); // we can lower this time to account for how long fifo push will take to run
 }
