@@ -1,16 +1,17 @@
 int led_pin = 3;
-uint8_t mask[9] = { 0x01,
+uint8_t mask[8] = { 0x01,
                     0x02,
                     0x04,
                     0x08,
                     0x10,
                     0x20,
                     0x40,
-                    0x80} 
+                    0x80}; 
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
-
+  uint8_t start_initial[9] = {0,1,1,0,1,1,1,1,0};
+  timing(start_initial);
 }
 
 void loop() {
@@ -18,18 +19,30 @@ void loop() {
   String user_input;
   while(Serial.available() == 0){
   }
-  user_input = Serial.readStringUntil('\n');
+  user_input = Serial.readString();
   Serial.flush();
   uint8_t temp;
   for(int i = 0; i < user_input.length(); i++)
   {
     temp = uint8_t((user_input[i]));
     //Serial.println(temp);
-
+    uint8_t idk[9];
+    idk[8] = 0;
+    byte2bit(temp, idk);
+    for(int i = 7; i>-1; i--)
+    {
+      Serial.print(idk[i]);
+    }
+    Serial.println();
+    Serial.print(char(temp));
+    Serial.println();
+    timing(idk);
+    delay(10);
+     
   }
   
 
-  //timing(array);
+  
   // delay(1000);
     
 }
@@ -43,14 +56,12 @@ void timing(uint8_t array[]) {
   for(int i = 0; i < 9; i++)
   {
     digitalWrite(led_pin, 0);
-    delayMicroseconds(150);
+    delayMicroseconds(100);
     digitalWrite(led_pin, array[i]);
-    delayMicroseconds(300);
-    digitalWrite(led_pin, 1);
     delayMicroseconds(200);
+    digitalWrite(led_pin, 1);
+    delayMicroseconds(370);
   }
-  char ascii = binary2ascii(array);
-  Serial.println(ascii);
 
 }
 
@@ -71,6 +82,22 @@ int zeros(uint8_t array[]) {
   }
 
   return num;
+}
+
+void byte2bit(uint8_t temp, uint8_t (&array)[9])
+{
+  // uint8_t array[8];
+  for(int i = 0; i < 8; i++)
+  {
+    if (temp & mask[i])
+    {
+      array[i] = 1;
+    }
+    else
+    {
+      array[i] = 0;
+    }
+  }
 }
 
 char binary2ascii(uint8_t array[])
