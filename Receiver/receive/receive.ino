@@ -1,23 +1,26 @@
-const int RECIVE_PIN = 6;
+const int RECIVE_PIN = 3;
 const int MESSAGE_SIZE = 9;
 const int MESSAGE_TIMEOUT = 1000; // timeout in miliseconds
 bool *fifo = new bool[MESSAGE_SIZE];
 int bitTracker = 0;
 bool timeoutHit = false;
 long int milisLastUpdate = 0;
+int threshHold = 100;
 
 void setup()
 {
     // put your setup code here, to run once:
     Serial.begin(115200);
     milisLastUpdate = millis();
+    Serial.println("seting up things");
 }
 
 void loop()
 {
 
-    if (digitalRead(RECIVE_PIN) == 0)
+    if (!(digitalRead(RECIVE_PIN)))
     {
+        
         readBit();
         timeoutHit = false;
         bitTracker++;
@@ -25,6 +28,7 @@ void loop()
     }
     if (bitTracker == MESSAGE_SIZE)
     {
+//        printBinary(fifo, 9);
         bitTracker = 0;
         if (verifyByte(fifo))
         {
@@ -129,7 +133,7 @@ bool verifyByte(bool byteMessage[])
 
 bool readBit()
 {
-    delayMicroseconds(110);
+    delayMicroseconds(200);
     fifoPush(digitalRead(RECIVE_PIN));
-    delayMicroseconds(210); // we can lower this time to account for how long fifo push will take to run
+    delayMicroseconds(400); // we can lower this time to account for how long fifo push will take to run
 }
