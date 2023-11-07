@@ -39,9 +39,18 @@ void loop() {
 
   if (user_input == "test\n")
   {
+    timing(00000111);
     for(int i = 0; i < 15; i++)
-      timing(testData[i]);
-      delay(100);
+      {
+        timing(testData[i]);
+        delay(100);
+        Serial.println(i);
+      }
+    while(Serial.available() == 0){
+      user_input = Serial.readString();
+      Serial.flush();
+    }
+
   }
 
   uint8_t temp;
@@ -60,7 +69,7 @@ void loop() {
     Serial.print(char(temp));
     Serial.println();
     timing(idk);
-    delay(20);
+    delay(50);
      
   }
   
