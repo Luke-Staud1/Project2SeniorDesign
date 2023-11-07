@@ -7,6 +7,21 @@ uint8_t mask[8] = { 0x01,
                     0x20,
                     0x40,
                     0x80}; 
+uint8_t testData[15] = {0b00000111, 
+                        0b00101010, 
+                        0b11001100, 
+                        0b00001101, 
+                        0b10101001, 
+                        0b01001010, 
+                        0b11100010, 
+                        0b00000111, 
+                        0b11111000, 
+                        0b01010100, 
+                        0b11001110, 
+                        0b00010100, 
+                        0b00000100, 
+                        0b11110110, 
+                        0b11101010};
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
@@ -21,6 +36,14 @@ void loop() {
   }
   user_input = Serial.readString();
   Serial.flush();
+
+  if (user_input == "test\n")
+  {
+    for(int i = 0; i < 15; i++)
+      timing(testData[i]);
+      delay(100);
+  }
+
   uint8_t temp;
   for(int i = 0; i < user_input.length(); i++)
   {
@@ -37,11 +60,9 @@ void loop() {
     Serial.print(char(temp));
     Serial.println();
     timing(idk);
-    delay(10);
+    delay(20);
      
   }
-  
-
   
   // delay(1000);
     
@@ -56,11 +77,11 @@ void timing(uint8_t array[]) {
   for(int i = 0; i < 9; i++)
   {
     digitalWrite(led_pin, 0);
-    delayMicroseconds(100);
+    delayMicroseconds(200);
     digitalWrite(led_pin, array[i]);
     delayMicroseconds(200);
     digitalWrite(led_pin, 1);
-    delayMicroseconds(370);
+    delayMicroseconds(200);
   }
 
 }
@@ -100,55 +121,57 @@ void byte2bit(uint8_t temp, uint8_t (&array)[9])
   }
 }
 
-char binary2ascii(uint8_t array[])
-{
-  int arrayLength = sizeof(array) / sizeof(array[0]);
-  char charArray[arrayLength + 1];
-  for (int i = 0; i < arrayLength; i++) {
-    charArray[i] = char(array[i]);
-  }
-  charArray[arrayLength] = '\0';
-  Serial.println(charArray);
+//void errorbit()
 
-  return charArray;
-}
+// char binary2ascii(uint8_t array[])
+// {
+//   int arrayLength = sizeof(array) / sizeof(array[0]);
+//   char charArray[arrayLength + 1];
+//   for (int i = 0; i < arrayLength; i++) {
+//     charArray[i] = char(array[i]);
+//   }
+//   charArray[arrayLength] = '\0';
+//   Serial.println(charArray);
 
-void str2char(String inputString, char* data)
-{
-  int arrayLength = inputString.length() + 1; // +1 for the null terminator
-  char outputCharArray[arrayLength];
+//   return charArray;
+// }
+
+// void str2char(String inputString, char* data)
+// {
+//   int arrayLength = inputString.length() + 1; // +1 for the null terminator
+//   char outputCharArray[arrayLength];
   
-  inputString.toCharArray(outputCharArray, arrayLength);
-  for (int i = 0; i < arrayLength; i++)
-  {
-    data[i] = outputCharArray[i];
-  }
+//   inputString.toCharArray(outputCharArray, arrayLength);
+//   for (int i = 0; i < arrayLength; i++)
+//   {
+//     data[i] = outputCharArray[i];
+//   }
   
-}
+// }
 
-void char2bin(char c)
-{
-   for (int i = 7; i >= 0; --i)
-    {
-        Serial.print( (c & (1 << i)) ? '1' : '0' );
-    }
-    Serial.println('\n');
-  //int arrayLength = sizeof(input) / sizeof(input[0]);
-  //int outputBinaryArray[arrayLength];
-  //for (int i = 0; i < arrayLength; i++)
-  //{
-  //  outputBinaryArray[i] = int(input[i]);
-  //}
-  //return outputBinaryArray;
-}
+// void char2bin(char c)
+// {
+//    for (int i = 7; i >= 0; --i)
+//     {
+//         Serial.print( (c & (1 << i)) ? '1' : '0' );
+//     }
+//     Serial.println('\n');
+//   //int arrayLength = sizeof(input) / sizeof(input[0]);
+//   //int outputBinaryArray[arrayLength];
+//   //for (int i = 0; i < arrayLength; i++)
+//   //{
+//   //  outputBinaryArray[i] = int(input[i]);
+//   //}
+//   //return outputBinaryArray;
+// }
 
-void send() {
+// void send() {
 
-  digitalWrite(led_pin, HIGH);
-  delay(1);
-  digitalWrite(led_pin, LOW);
-  delay(1);
-}
+//   digitalWrite(led_pin, HIGH);
+//   delay(1);
+//   digitalWrite(led_pin, LOW);
+//   delay(1);
+// }
 
 
 
