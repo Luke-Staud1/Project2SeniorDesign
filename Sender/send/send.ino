@@ -1,4 +1,4 @@
-int led_pin = 3;
+int led_pin = 2;
 uint8_t mask[8] = {0x01,
                    0x02,
                    0x04,
@@ -35,11 +35,15 @@ void loop()
   // put your main code here, to run repeatedly:
   String user_input;
 
-    while (Serial.available() == 0)
-    {
-    }
-      user_input = Serial.readString();
-      Serial.flush();
+  while (Serial.available() == 0)
+  {
+    delay(1000);
+
+  }
+  
+  user_input = Serial.readString();
+  Serial.println(user_input);
+  Serial.flush();
   if (user_input == "test\n")
   {
     Serial.println("running test sequence");
@@ -65,16 +69,20 @@ void loop()
       delay(50);
     }
   }
+  
 }
 
 void testRoutine()
 {
-    for (int i = 0; i < 15; i++)
-    {
-      timing(testData[i]);
-      delay(100);
-      Serial.println(i);
-    }
+  for (int i = 0; i <= 15; i++)
+  {
+    timing(testData[i]);
+    //Serial.println(testData[i]);
+    Serial.print(char(testData[i]));
+    delay(100);
+    Serial.println(i);
+  }
+  timing(00001010);
 }
 
 void timing(uint8_t array[])
