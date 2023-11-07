@@ -1,4 +1,4 @@
-const int RECIVE_PIN = 3;
+const int RECIVE_PIN = 6;
 const int MESSAGE_SIZE = 9;
 const int MESSAGE_TIMEOUT = 1000; // timeout in miliseconds
 bool *fifo = new bool[MESSAGE_SIZE];
