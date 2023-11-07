@@ -1,7 +1,9 @@
-const int RECIVE_PIN = 3;
+const int RECIVE_PIN = 6;
 const int MESSAGE_SIZE = 9;
 const int MESSAGE_TIMEOUT = 1000; // timeout in miliseconds
 bool *fifo = new bool[MESSAGE_SIZE];
+char match = 0x07;
+char key = 0x00;
 int bitTracker = 0;
 bool timeoutHit = false;
 long int milisLastUpdate = 0;
@@ -28,11 +30,10 @@ void loop()
     }
     if (bitTracker == MESSAGE_SIZE)
     {
-//        printBinary(fifo, 9);
         bitTracker = 0;
         if (verifyByte(fifo))
         {
-            convetToAscii();
+            key = convetToAscii();
             delay(10);
             fifoFlush();
         }
@@ -40,6 +41,10 @@ void loop()
         {
             fifoFlush();
             Serial.println("Error in transmission detected");
+        }
+        if(key == match)
+        {
+          Serial.println("test detected");
         }
     }
     if (millis() - milisLastUpdate > MESSAGE_TIMEOUT)
@@ -134,7 +139,7 @@ bool verifyByte(bool byteMessage[])
 
 bool readBit()
 {
-    delayMicroseconds(100);
+    delayMicroseconds(200);
     fifoPush(digitalRead(RECIVE_PIN));
-    delayMicroseconds(100); // we can lower this time to account for how long fifo push will take to run
+    delayMicroseconds(200); // we can lower this time to account for how long fifo push will take to run
 }
