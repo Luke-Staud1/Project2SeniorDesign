@@ -72,7 +72,7 @@ void fifoFlush()
     }
 }
 
-void convetToAscii()
+char convetToAscii()
 {
     char ascii = 0; // i dont know why this has to be a one but it makes everything work
     bool *dataSegment = new bool[MESSAGE_SIZE - 1];
@@ -96,6 +96,7 @@ void convetToAscii()
     }
 
     Serial.print(ascii);
+    return(ascii);
 }
 
 void printBinary(bool bitArray[], int size)
@@ -133,7 +134,7 @@ bool verifyByte(bool byteMessage[])
 
 bool readBit()
 {
-    delayMicroseconds(200);
+    delayMicroseconds(100);
     fifoPush(digitalRead(RECIVE_PIN));
-    delayMicroseconds(400); // we can lower this time to account for how long fifo push will take to run
+    delayMicroseconds(100); // we can lower this time to account for how long fifo push will take to run
 }
