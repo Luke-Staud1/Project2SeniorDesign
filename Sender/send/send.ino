@@ -66,7 +66,7 @@ void loop()
       Serial.print(char(temp));
       Serial.println();
       timing(idk);
-      delay(50);
+      delay(70);
     }
   }
   
@@ -95,11 +95,11 @@ void timing(uint8_t array[])
   for (int i = 0; i < 9; i++)
   {
     digitalWrite(led_pin, 0);
-    delayMicroseconds(200);
+    delayMicroseconds(220);
     digitalWrite(led_pin, array[i]);
     delayMicroseconds(200);
     digitalWrite(led_pin, 1);
-    delayMicroseconds(200);
+    delayMicroseconds(240);
   }
 }
 
